@@ -1,0 +1,12 @@
+<map id="G" name="G">
+<area shape="rect" href="$_d_p_x_8h.html" title="/Users/patrick/Development/DPX/svn/source/DPX.h" alt="" coords="690,80,1023,107" />
+<area shape="rect" href="$_d_p_x_header_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/DPXHeader.cpp" alt="" coords="1047,80,1439,107" />
+<area shape="rect" href="$_codec_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/Codec.cpp" alt="" coords="56,229,416,256" />
+<area shape="rect" href="$_codec_8h.html" title="/Users/patrick/Development/DPX/svn/source/Codec.h" alt="" coords="352,155,696,181" />
+<area shape="rect" href="$_reader_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/Reader.cpp" alt="" coords="271,304,636,331" />
+<area shape="rect" href="$_run_length_encoding_8h.html" title="/Users/patrick/Development/DPX/svn/source/RunLengthEncoding.h" alt="" coords="491,229,920,256" />
+<area shape="rect" href="$_run_length_encoding_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/RunLengthEncoding.cpp" alt="" coords="698,304,1140,331" />
+<area shape="rect" href="$_d_p_x_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/DPX.cpp" alt="" coords="944,155,1291,181" />
+<area shape="rect" href="$_element_read_stream_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/ElementReadStream.cpp" alt="" coords="1315,155,1760,181" />
+<area shape="rect" href="$_writer_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/Writer.cpp" alt="" coords="1784,155,2142,181" />
+</map>

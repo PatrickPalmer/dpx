@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="rect" href="$_reader_internal_8h.html" title="/Users/patrick/Development/DPX/svn/source/ReaderInternal.h" alt="" coords="481,80,879,107" />
+<area shape="rect" href="$_writer_internal_8h.html" title="/Users/patrick/Development/DPX/svn/source/WriterInternal.h" alt="" coords="1120,80,1509,107" />
+<area shape="rect" href="$_codec_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/Codec.cpp" alt="" coords="5,155,365,182" />
+<area shape="rect" href="$_reader_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/Reader.cpp" alt="" coords="389,155,755,182" />
+<area shape="rect" href="$_run_length_encoding_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/RunLengthEncoding.cpp" alt="" coords="779,155,1221,182" />
+<area shape="rect" href="$_writer_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/Writer.cpp" alt="" coords="1245,155,1603,182" />
+</map>

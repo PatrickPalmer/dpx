@@ -1,0 +1,11 @@
+
+steps to build:
+
+libtoolize or glibtoolize
+aclocal
+autoconf
+automake -a
+./configure
+make
+
+
