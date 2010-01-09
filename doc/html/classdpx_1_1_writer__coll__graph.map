@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="rect" href="$structdpx_1_1_header.html" title="Complete DPX Header." alt="" coords="155,173,251,200" />
+<area shape="rect" href="$structdpx_1_1_generic_header.html" title="Generic File and Image Header Information." alt="" coords="5,96,149,123" />
+<area shape="rect" href="$structdpx_1_1_image_element.html" title="Data Structure for Image Element." alt="" coords="8,5,147,32" />
+<area shape="rect" href="$structdpx_1_1_industry_header.html" title="Motion Picture and Television Industry Specific Information." alt="" coords="173,96,317,123" />
+<area shape="rect" href="$class_out_stream.html" title="Output Stream for writing files." alt="" coords="275,173,363,200" />
+</map>

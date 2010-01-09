@@ -1,0 +1,16 @@
+<map id="G" name="G">
+<area shape="rect" href="$_d_p_x_header_8h.html" title="/Users/patrick/Development/DPX/svn/source/DPXHeader.h" alt="" coords="880,80,1259,107" />
+<area shape="rect" href="$_d_p_x_8h.html" title="/Users/patrick/Development/DPX/svn/source/DPX.h" alt="" coords="976,155,1309,182" />
+<area shape="rect" href="$_writer_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/Writer.cpp" alt="" coords="1613,230,1971,256" />
+<area shape="rect" href="$_element_read_stream_8h.html" title="/Users/patrick/Development/DPX/svn/source/ElementReadStream.h" alt="" coords="267,230,699,256" />
+<area shape="rect" href="$_in_stream_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/InStream.cpp" alt="" coords="1384,80,1760,107" />
+<area shape="rect" href="$_out_stream_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/OutStream.cpp" alt="" coords="1784,80,2171,107" />
+<area shape="rect" href="$_d_p_x_header_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/DPXHeader.cpp" alt="" coords="560,155,952,182" />
+<area shape="rect" href="$_codec_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/Codec.cpp" alt="" coords="627,304,987,331" />
+<area shape="rect" href="$_codec_8h.html" title="/Users/patrick/Development/DPX/svn/source/Codec.h" alt="" coords="1195,230,1539,256" />
+<area shape="rect" href="$_reader_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/Reader.cpp" alt="" coords="1168,379,1533,406" />
+<area shape="rect" href="$_run_length_encoding_8h.html" title="/Users/patrick/Development/DPX/svn/source/RunLengthEncoding.h" alt="" coords="1011,304,1440,331" />
+<area shape="rect" href="$_run_length_encoding_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/RunLengthEncoding.cpp" alt="" coords="317,379,760,406" />
+<area shape="rect" href="$_d_p_x_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/DPX.cpp" alt="" coords="773,230,1120,256" />
+<area shape="rect" href="$_element_read_stream_8cpp.html" title="/Users/patrick/Development/DPX/svn/source/ElementReadStream.cpp" alt="" coords="56,304,501,331" />
+</map>
