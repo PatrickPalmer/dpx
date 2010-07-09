@@ -69,7 +69,7 @@ void dpx::RunLengthEncoding::Reset()
 
 bool dpx::RunLengthEncoding::Read(const Header &dpxHeader, ElementReadStream *fd, const int element, const Block &block, void *data, const DataSize size)
 {
-	U32 i;
+	int i;
 	
 	// just check to make sure that this element is RLE
 	if (dpxHeader.ImageEncoding(element) != kRLE)
@@ -82,7 +82,7 @@ bool dpx::RunLengthEncoding::Read(const Header &dpxHeader, ElementReadStream *fd
 	const int height = dpxHeader.Height();
 	const int byteCount = dpxHeader.ComponentByteCount(element);
 	const U32 eolnPad = dpxHeader.EndOfLinePadding(element);
-	DataSize srcSize = dpxHeader.ComponentDataSize(element);
+	//DataSize srcSize = dpxHeader.ComponentDataSize(element);
 	
 	// has the buffer been read in and decoded?
 	if (this->buf == 0)
@@ -133,8 +133,8 @@ bool dpx::RunLengthEncoding::Read(const Header &dpxHeader, ElementReadStream *fd
 		U8 *tempBuf = new U8[EXPANDED_BUFFER_SIZE];
 		
 		// xpos, ypos in decoding
-		int xpos = 0;
-		int ypos = 0;
+		/*int xpos = 0;
+		int ypos = 0;*/
 		
 		// read in the encoded image block at a time
 		bool done = false;
@@ -164,7 +164,8 @@ bool dpx::RunLengthEncoding::Read(const Header &dpxHeader, ElementReadStream *fd
 	// NOT COMPLETE YET
 	// copy buffer
 	CopyImageBlock(dpxHeader, element, buf, srcSize, data, size, dstSize, block);
-#endif	
+#endif
+    return true;
 }	
 
 
