@@ -45,7 +45,7 @@
 
 
 
-dpx::Reader::Reader() : rio(0), fd(0)
+dpx::Reader::Reader() : fd(0), rio(0)
 {
 	// initialize all of the Codec* to NULL
 	for (int i = 0; i < MAX_ELEMENTS; i++)
@@ -182,7 +182,7 @@ bool dpx::Reader::ReadBlock(void *data, const DataSize size, Block &block, const
 		 (bitDepth == 16 && size == dpx::kWord) ||
 		 (bitDepth == 32 && size == dpx::kFloat) ||
 		 (bitDepth == 64 && size == dpx::kDouble)) &&
-		block.x1 == 0 && block.x2 == (this->header.Width()-1))
+		block.x1 == 0 && block.x2 == (int)(this->header.Width()-1))
 	{
 		// seek to the beginning of the image block
 		if (this->fd->Seek((this->header.DataOffset(element) + (block.y1 * this->header.Width() * (bitDepth / 8) * numberOfComponents)), InStream::kStart) == false)

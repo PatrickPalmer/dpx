@@ -490,7 +490,7 @@ void dpx::GenericHeader::CalculateNumberOfElements()
 	int i = this->ImageElementCount();
 	
 	if (i == 0)
-		this->numberOfElements = 0xffffffff;
+		this->numberOfElements = 0xffff;
 	else
 		this->numberOfElements = U16(i);	
 }

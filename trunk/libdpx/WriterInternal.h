@@ -87,7 +87,7 @@ namespace dpx
 		int i;
 		int index = bufsize - 1;
 		bool start = true;
-		bool match = true;
+		//bool match = true;
 		
 		// for each data type, have maximum length of rle datum
 		// subtract one so it the LSBit can be used to state
@@ -255,7 +255,7 @@ namespace dpx
 		IB *dst = new IB[(width * noc) + 1 + rleBufAdd];
 
 		// each line in the buffer
-		for (int h = 0; h < height; h++)
+		for (U32 h = 0; h < height; h++)
 		{
 			// image buffer
 			unsigned char *imageBuf = reinterpret_cast<unsigned char*>(src_buf);
@@ -363,7 +363,7 @@ namespace dpx
 		IB *dst = new IB[(width * noc) + rleBufAdd];
 
 		// each line in the buffer
-		for (int h = 0; h < height; h++)
+		for (U32 h = 0; h < height; h++)
 		{
 			// image buffer
 			unsigned char *imageBuf = reinterpret_cast<unsigned char*>(src_buf);

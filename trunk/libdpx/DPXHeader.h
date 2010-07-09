@@ -43,7 +43,7 @@
 
 #include <cstring>
 
-#include "DPXstream.h"
+#include "DPXStream.h"
 
 
 
