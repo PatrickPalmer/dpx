@@ -38,6 +38,7 @@
 #define _DPX_H 1
 
 #include <cstdio>
+#include <limits>
 
 #include "DPXHeader.h"
 #include "DPXStream.h"
@@ -332,9 +333,11 @@ namespace dpx
 		 * \param project project name (200 characters max)
 		 * \param copyright copyright statement (200 characters max)
 		 * \param encryptKey encryption key
+		 * \param swapEndian whether to write the image header in reverse to native endianness
 		 */			
 		void SetFileInfo(const char *fileName, const char *creationTimeDate = 0, const char *creator = 0,
-			const char *project = 0, const char *copyright = 0, const U32 encryptKey = ~0);
+			const char *project = 0, const char *copyright = 0, const U32 encryptKey = ~0,
+			const bool swapEndian = false);
 
 		/*!
 		 * \brief Set the Width and Height of the images
@@ -379,8 +382,8 @@ namespace dpx
 			const Packing packing = kFilledMethodA, 
 			const Encoding encoding = kNone,
 			const U32 dataSign = 0, 
-			const U32 lowData = ~0, const R32 lowQuantity = ~0,
-			const U32 highData = ~0, const R32 highQuantity = ~0,
+			const U32 lowData = ~0, const R32 lowQuantity = std::numeric_limits<float>::quiet_NaN(),
+			const U32 highData = ~0, const R32 highQuantity = std::numeric_limits<float>::quiet_NaN(),
 			const U32 eolnPadding = 0, const U32 eoimPadding = 0);
 
 		/*!

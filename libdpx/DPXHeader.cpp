@@ -34,9 +34,11 @@
  
  
 
+#include <cassert>
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <limits>
 
 
 #include "DPXHeader.h"
@@ -113,7 +115,7 @@ void dpx::GenericHeader::Reset()
 
 	// Image Orientation
 	this->xOffset = this->yOffset = 0xffffffff;
-	this->xCenter = this->yCenter = 0xffffffff;
+	this->xCenter = this->yCenter = std::numeric_limits<float>::quiet_NaN();
 	this->xOriginalSize = this->yOriginalSize = 0xffffffff;
 	EmptyString(this->sourceImageFileName, 100);
 	EmptyString(this->sourceTimeDate, 24);
@@ -121,7 +123,7 @@ void dpx::GenericHeader::Reset()
 	EmptyString(this->inputDeviceSerialNumber, 32);
 	this->border[0] = this->border[1] = this->border[2] = this->border[3] = 0xffff;
 	this->aspectRatio[0] = this->aspectRatio[1] = 0xffffffff;
-	this->xScannedSize = this->yScannedSize = 0xffffffff;
+	this->xScannedSize = this->yScannedSize = std::numeric_limits<float>::quiet_NaN();
 	EmptyString(this->reserved3, 28);
 }
 
@@ -142,7 +144,7 @@ void dpx::IndustryHeader::Reset()
 	EmptyString(this->count, 4);
 	EmptyString(this->format, 32);
 	this->framePosition = this->sequenceLength = this->heldCount = 0xffffffff;
-	this->frameRate = this->shutterAngle = 0xffffffff;
+	this->frameRate = this->shutterAngle = std::numeric_limits<float>::quiet_NaN();
 	EmptyString(this->frameId, 32);
 	EmptyString(this->slateInfo, 200);
 	EmptyString(this->reserved4, 56);
@@ -152,10 +154,10 @@ void dpx::IndustryHeader::Reset()
 	this->interlace = this->fieldNumber = 0xff;
 	this->videoSignal = kUndefined;
 	this->zero = 0xff;
-	this->horizontalSampleRate = this->verticalSampleRate = this->temporalFrameRate = 0xffffffff;
-	this->timeOffset = this->gamma = 0xffffffff;
-	this->blackLevel = this->blackGain = 0xffffffff;
-	this->breakPoint = this->whiteLevel = this->integrationTimes = 0xffffffff;
+	this->horizontalSampleRate = this->verticalSampleRate = this->temporalFrameRate = std::numeric_limits<float>::quiet_NaN();
+	this->timeOffset = this->gamma = std::numeric_limits<float>::quiet_NaN();
+	this->blackLevel = this->blackGain = std::numeric_limits<float>::quiet_NaN();
+	this->breakPoint = this->whiteLevel = this->integrationTimes = std::numeric_limits<float>::quiet_NaN();
 	EmptyString(this->reserved5, 76);
 }
 
@@ -223,10 +225,17 @@ bool dpx::Header::Check()
 
 bool dpx::Header::Write(OutStream *io)
 {
+	// validate and byte swap, if necessary
+	if (!this->Validate())
+		return false;
+
 	// write the header to the file
 	size_t r = sizeof(GenericHeader) + sizeof(IndustryHeader);
 	if (io->Write(&(this->magicNumber), r) != r)
 		return false;
+
+	// swap back - data is in file, now we need it native again
+	this->Validate();
 	return true;
 }
 
@@ -240,23 +249,35 @@ bool dpx::Header::WriteOffsetData(OutStream *io)
 	const long FIELD2 = 4;			// offset to image in header
 	if (io->Seek(FIELD2, OutStream::kStart) == false)
 		return false;
+	if (this->RequiresByteSwap())
+		SwapBytes(this->imageOffset);
 	if (io->Write(&this->imageOffset, sizeof(U32)) == false)
 		return false;
+	if (this->RequiresByteSwap())
+		SwapBytes(this->imageOffset);
 			
 	
 	// write the file size
 	const long FIELD4 = 16;			// offset to total image file size in header
 	if (io->Seek(FIELD4, OutStream::kStart) == false)
 		return false;
+	if (this->RequiresByteSwap())
+		SwapBytes(this->fileSize);
 	if (io->Write(&this->fileSize, sizeof(U32)) == false)
 		return false;
+	if (this->RequiresByteSwap())
+		SwapBytes(this->fileSize);
 			
 	// write the number of elements
 	const long FIELD19 = 770;		// offset to number of image elements in header
 	if (io->Seek(FIELD19, OutStream::kStart) == false)
 		return false;
+	if (this->RequiresByteSwap())
+		SwapBytes(this->numberOfElements);
 	if (io->Write(&this->numberOfElements, sizeof(U16)) == false)
 		return false;
+	if (this->RequiresByteSwap())
+		SwapBytes(this->numberOfElements);
 	
 	// write the image offsets
 	const long FIELD21_12 = 808;	// offset to image offset in image element data structure
@@ -274,8 +295,12 @@ bool dpx::Header::WriteOffsetData(OutStream *io)
 				return false;
 
 			// write
+			if (this->RequiresByteSwap())
+				SwapBytes(this->chan[i].dataOffset);
 			if (io->Write(&this->chan[i].dataOffset, sizeof(U32)) == false)
 				return false;
+			if (this->RequiresByteSwap())
+				SwapBytes(this->chan[i].dataOffset);
 
 	}
 	
@@ -472,6 +497,12 @@ int dpx::GenericHeader::ImageElementComponentCount(const int element) const
 
 int dpx::GenericHeader::ImageElementCount() const
 {
+	if(this->numberOfElements>0 && this->numberOfElements<=MAX_ELEMENTS)
+		return this->numberOfElements;
+	
+	// If the image header does not list a valid number of elements,
+	// count how many defined image descriptors we have...
+	
 	int i = 0;
 	
 	while (i < MAX_ELEMENTS )
@@ -487,6 +518,7 @@ int dpx::GenericHeader::ImageElementCount() const
 
 void dpx::GenericHeader::CalculateNumberOfElements()
 {
+	this->numberOfElements = 0xffff;
 	int i = this->ImageElementCount();
 	
 	if (i == 0)
@@ -534,6 +566,10 @@ dpx::DataSize dpx::GenericHeader::ComponentDataSize(const int element) const
 	case 64:
 		ret = kDouble;
 		break;
+	default:
+		assert(0 && "Unknown bit depth");
+		ret = kDouble;
+		break;
 	}
 	
 	return ret;
@@ -563,6 +599,10 @@ int dpx::GenericHeader::ComponentByteCount(const int element) const
 	case 64:
 		ret = sizeof(R64);
 		break;
+	default:
+		assert(0 && "Unknown bit depth");
+		ret = sizeof(R64);
+		break;
 	}
 	
 	return ret;
@@ -589,6 +629,10 @@ int dpx::GenericHeader::DataSizeByteCount(const DataSize ds)
 		ret = sizeof(R32);
 		break;
 	case kDouble:
+		ret = sizeof(R64);
+		break;
+	default:
+		assert(0 && "Unknown data size");
 		ret = sizeof(R64);
 		break;
 	}
