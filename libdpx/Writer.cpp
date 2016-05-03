@@ -244,6 +244,7 @@ bool dpx::Writer::WriteElement(const int element, void *data, const DataSize siz
 	const U32 height = this->header.Height();
 	const int noc = this->header.ImageElementComponentCount(element);
 	const Packing packing = this->header.ImagePacking(element);
+	const bool swapEndian = this->header.RequiresByteSwap();
 
 	// check width & height, just in case
 	if (width == 0 || height == 0)
@@ -262,9 +263,8 @@ bool dpx::Writer::WriteElement(const int element, void *data, const DataSize siz
 	}
 
 	// can we write the entire memory chunk at once without any additional processing
-	if (!rle  &&
+	if (!rle  && !swapEndian &&
 		((bitDepth == 8 && size == dpx::kByte) ||
-		 (bitDepth == 12 && size == dpx::kWord && packing == kFilledMethodA) || 
 		 (bitDepth == 16 && size == dpx::kWord) || 
 		 (bitDepth == 32 && size == dpx::kFloat) ||
 		 (bitDepth == 64 && size == dpx::kDouble)))
@@ -280,48 +280,48 @@ bool dpx::Writer::WriteElement(const int element, void *data, const DataSize siz
 		{
 		case 8:
 			if (size == dpx::kByte)
-				this->fileLoc += WriteBuffer<U8, 8, true>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, this->header.RequiresByteSwap());
+				this->fileLoc += WriteBuffer<U8, 8, true>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, swapEndian);
 			else
-				this->fileLoc += WriteBuffer<U8, 8, false>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, this->header.RequiresByteSwap());
+				this->fileLoc += WriteBuffer<U8, 8, false>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, swapEndian);
 			break;
 
 		case 10:
 			// are the channels stored in reverse
-			if (this->header.ImageDescriptor(element) == kRGB && this->header.DatumSwap(element) && bitDepth == 10)
-				reverse = true;
+			//if (this->header.ImageDescriptor(element) == kRGB && this->header.DatumSwap(element) && bitDepth == 10)
+				reverse = true; // seems like we would always have to "reverse" the order, although actually the normal written order appears reversed
 
 			if (size == dpx::kWord)
-				this->fileLoc += WriteBuffer<U16, 10, true>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, this->header.RequiresByteSwap());
+				this->fileLoc += WriteBuffer<U16, 10, true>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, swapEndian);
 			else
-				this->fileLoc += WriteBuffer<U16, 10, false>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, this->header.RequiresByteSwap());
+				this->fileLoc += WriteBuffer<U16, 10, false>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, swapEndian);
 			break;
 
 		case 12:
-			if (size == dpx::kWord)
-				this->fileLoc += WriteBuffer<U16, 12, true>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, this->header.RequiresByteSwap());
+			if (size == dpx::kWord && !swapEndian)
+				this->fileLoc += WriteBuffer<U16, 12, true>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, swapEndian);
 			else
-				this->fileLoc += WriteBuffer<U16, 12, false>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, this->header.RequiresByteSwap());
+				this->fileLoc += WriteBuffer<U16, 12, false>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, swapEndian);
 			break;
 
 		case 16:
-			if (size == dpx::kWord)
-				this->fileLoc += WriteBuffer<U16, 16, true>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, this->header.RequiresByteSwap());
+			if (size == dpx::kWord && !swapEndian)
+				this->fileLoc += WriteBuffer<U16, 16, true>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, swapEndian);
 			else
-				this->fileLoc += WriteBuffer<U16, 16, false>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, this->header.RequiresByteSwap());
+				this->fileLoc += WriteBuffer<U16, 16, false>(this->fd, size, data, width, height, noc, packing, rle, reverse, eolnPad, blank, status, swapEndian);
 			break;
 
 		case 32:
-			if (size == dpx::kFloat)
-				this->fileLoc += WriteFloatBuffer<R32, 32, true>(this->fd, size, data, width, height, noc, packing, rle, eolnPad, blank, status, this->header.RequiresByteSwap());
+			if (size == dpx::kFloat && !swapEndian)
+				this->fileLoc += WriteFloatBuffer<R32, 32, true>(this->fd, size, data, width, height, noc, packing, rle, eolnPad, blank, status, swapEndian);
 			else
-				this->fileLoc += WriteFloatBuffer<R32, 32, false>(this->fd, size, data, width, height, noc, packing, rle, eolnPad, blank, status, this->header.RequiresByteSwap());
+				this->fileLoc += WriteFloatBuffer<R32, 32, false>(this->fd, size, data, width, height, noc, packing, rle, eolnPad, blank, status, swapEndian);
 			break;
 
 		case 64:
-			if (size == dpx::kDouble)
-				this->fileLoc += WriteFloatBuffer<R64, 64, true>(this->fd, size, data, width, height, noc, packing, rle, eolnPad, blank, status, this->header.RequiresByteSwap());
+			if (size == dpx::kDouble && !swapEndian)
+				this->fileLoc += WriteFloatBuffer<R64, 64, true>(this->fd, size, data, width, height, noc, packing, rle, eolnPad, blank, status, swapEndian);
 			else
-				this->fileLoc += WriteFloatBuffer<R64, 64, false>(this->fd, size, data, width, height, noc, packing, rle, eolnPad, blank, status, this->header.RequiresByteSwap());
+				this->fileLoc += WriteFloatBuffer<R64, 64, false>(this->fd, size, data, width, height, noc, packing, rle, eolnPad, blank, status, swapEndian);
 			break;
 		}
 	}

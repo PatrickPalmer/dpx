@@ -720,7 +720,7 @@ dpx::U32 dpx::IndustryHeader::TCFromString(const char *str) const
 	for (i = 0; i < 8; i++)
 	{
 		// determine string index skipping :
-		idx = i + ((i + 1) / 3);
+		idx = i + (i / 2);
 		ch = str[idx];
 
 		// error check
