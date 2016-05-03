@@ -320,17 +320,20 @@ namespace dpx
 				{
 					WritePackedMethod<IB, BITDEPTH>(src, dst, (width*noc), reverse, bufaccess);
 				}
-				else if (packing == dpx::kFilledMethodB)
+				else if (packing == dpx::kFilledMethodA)
+				{
+					// zero out the bottom 4 bits
+					for (int w = 0; w < bufaccess.length; w++)
+						dst[w] = src[bufaccess.offset+w] & 0xfff0;
+					bufaccess.offset = 0;
+				}
+				else // if (packing == dpx::kFilledMethodB)
 				{
 					// shift 4 MSB down, so 0x0f00 would become 0x00f0
 					for (int w = 0; w < bufaccess.length; w++)
 						dst[w] = src[bufaccess.offset+w] >> 4;
 					bufaccess.offset = 0;
 				}
-				// a bitdepth of 12 by default is packed with dpx::kFilledMethodA
-				// assumes that either a copy or rle was required
-				// otherwise this routine should not be called with:
-				//     12-bit Method A with the source buffer data type is kWord				
 			}
 			
 			// write line

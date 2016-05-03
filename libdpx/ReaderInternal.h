@@ -291,11 +291,11 @@ namespace dpx
 			readSize += (block.x1 * numberOfComponents * dataSize % 32);			// add the bits left over from the beginning of the line
 			readSize = ((readSize + 31) / 32) * sizeof(U32);
 
+			fd->Read(dpxHeader, element, offset, readBuf, readSize);
+
 			// calculate buffer offset
 			int bufoff = line * dpxHeader.Width() * numberOfComponents;
 	
-			fd->Read(dpxHeader, element, offset, readBuf, readSize);
-
 			// unpack the words in the buffer
 			int count = (block.x2 - block.x1 + 1) * numberOfComponents;
 			UnPackPacked<BUF, MASK, MULTIPLIER, REMAIN, REVERSE>(readBuf, dataSize, data, count, bufoff);
@@ -367,8 +367,8 @@ namespace dpx
 	}
 
 
-	template <typename IR, typename BUF>
-	bool Read12bitFilledMethodB(const Header &dpxHeader, U16 *readBuf, IR *fd, const int element, const Block &block, BUF *data)
+	template <typename IR, typename BUF, bool METHODB>
+	bool Read12bitFilled(const Header &dpxHeader, U16 *readBuf, IR *fd, const int element, const Block &block, BUF *data)
 	{
 		// get the number of components for this element descriptor
 		const int numberOfComponents = dpxHeader.ImageElementComponentCount(element);
@@ -393,11 +393,13 @@ namespace dpx
 						block.x1 * numberOfComponents * 2 + (line * eolnPad);
 	
 			fd->Read(dpxHeader, element, offset, readBuf, width*2);
-				
+			
+			const int downshift = (METHODB ? 0 : 4);
+			
 			// convert data		
 			for (int i = 0; i < width; i++)
 			{
-				U16 d1 = readBuf[i];
+				U16 d1 = readBuf[i] >> downshift;
 				BaseTypeConvertU12ToU16(d1, d1);
 				BaseTypeConverter(d1, data[width*line+i]);
 			}
@@ -458,11 +460,11 @@ namespace dpx
 			else if (packing == kFilledMethodB)
 				// filled method B
 				// 12 bits fill LSB of 16 bits
-				return Read12bitFilledMethodB<IR, BUF>(dpxHeader, reinterpret_cast<U16 *>(readBuf), fd, element, block, reinterpret_cast<BUF *>(data));
+				return Read12bitFilled<IR, BUF, true>(dpxHeader, reinterpret_cast<U16 *>(readBuf), fd, element, block, reinterpret_cast<BUF *>(data));
 			else	
 				// filled method A
 				// 12 bits fill MSB of 16 bits
-				return ReadBlockTypes<IR, U16, kWord, BUF, BUFTYPE>(dpxHeader, reinterpret_cast<U16 *>(readBuf), fd, element, block, reinterpret_cast<BUF *>(data));
+				return Read12bitFilled<IR, BUF, false>(dpxHeader, reinterpret_cast<U16 *>(readBuf), fd, element, block, reinterpret_cast<BUF *>(data));
 		}
 		else if (size == dpx::kByte)
 			return ReadBlockTypes<IR, U8, kByte, BUF, BUFTYPE>(dpxHeader, reinterpret_cast<U8 *>(readBuf), fd, element, block, reinterpret_cast<BUF *>(data));
